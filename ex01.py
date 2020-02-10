@@ -1,70 +1,81 @@
 """
-Perceptron(퍼셉트론): 다수의 신호를 입력받아서, 하나의 신호를 출력
-AND: 두 입력이 모두 1일 때 출력이 1, 그 이외에는 0
-NAND: AND 출력의 반대(NOT)
-OR: 두 입력 중 적어도 하나가 1이면 출력이 1, 그 이외에는 0
-XOR: 두 입력 중 하나는 1, 다른 하나는 0일 때만 출력이 1, 그 이외에는 0
+Perceptron:
+    - 입력: (x1, x2)
+    - 출력:
+        a = x1 * w1 + x2 * w2 + b 계산
+        y = 1, a > 임계값
+          = 0  a <= 임계값
+신경망의 뉴런(neuron)에서는 입력 신호의 가중치 합을 출력값으로 변환해 주는 함수가 존재
+-> 활성화 함수(activation function)
 """
+import numpy as np
+import math
+import matplotlib.pyplot as plt
 
 
-def and_gate(x1, x2):
-    w1, w2 = 1, 1  # 가중치(weight)
-    b = -1  # 편향(bias)
-    y = x1 * w1 + x2 * w2 + b
-    if y > 0:
-        return 1
-    else:
-        return 0
+def step_function(x):
+    """
+    Step Function.
+
+    :param x: numpy.ndarray
+    :return: step(계단) 함수 출력(0 또는 1)로 이루어진 numpy.ndarray
+    """
+    # result = [1 if x_i > 0 else 0 for x_i in x]
+    # result = []
+    # for x_i in x:
+    #     if x_i > 0:
+    #         result.append(1)
+    #     else:
+    #         result.append(0)
+    # return np.array(result)
+    y = x > 0  # [False, False, ..., True]
+    return y.astype(np.int)  # [0, 0, ..., 1]
 
 
-def nand_gate(x1, x2):
-    w1, w2 = 0.5, 0.5  # 가중치(weight)
-    b = 0  # 편향(bias)
-    y = x1 * w1 + x2 * w2 + b
-    if y < 1:
-        return 1
-    else:
-        return 0
-
-    # if and_gate(x1, x2) > 0:
-    #     return 0
-    # else:
-    #     return 1
+def sigmoid(x):
+    """sigmoid = 1 / (1 + exp(-x))"""
+    # return 1 / (1 + math.exp(-x))
+    return 1 / (1 + np.exp(-x))
 
 
-def or_gate(x1, x2):
-    w1, w2 = 0.5, 0.5
-    b = 0.5
-    y = x1 * w1 + x2 * w2 + b
-    if y >= 1:
-        return 1
-    else:
-        return 0
-
-
-def xor_gate(x1, x2):
-    """XOR(Exclusive OR: 배타적 OR)
-    선형 관계식(y = x1 * w1 + x2 * w2 + b) 하나만 이용해서는 만들 수 없음.
-    NAND, OR, AND를 조합해야 가능."""
-    z1 = nand_gate(x1, x2)
-    z2 = or_gate(x1, x2)
-    return and_gate(z1, z2)  # forward propagation(순방향 전파)
+def relu(x):
+    """ReLU(Rectified Linear Unit)
+        y = x, if x > 0
+          = 0, otherwise
+    """
+    return np.maximum(0, x)
 
 
 if __name__ == '__main__':
-    for x1 in (0, 1):
-        for x2 in (0, 1):
-            print(f'AND({x1}, {x2}) -> {and_gate(x1, x2)}')
+    x = np.arange(-3, 4)
+    print('x =', x)
+    # for x_i in x:
+    #     print(step_function(x_i), end=' ')
+    # print()
+    print('y =', step_function(x))  # [0 0 0 0 1 1 1]
 
-    for x1 in (0, 1):
-        for x2 in (0, 1):
-            print(f'NAND({x1}, {x2}) -> {nand_gate(x1, x2)}')
+    # for x_i in x:
+    #     print(sigmoid(x_i), end=' ')
+    # print()
+    print('sigmoid =', sigmoid(x))
 
-    for x1 in (0, 1):
-        for x2 in (0, 1):
-            print(f'OR({x1}, {x2}) -> {or_gate(x1, x2)}')
+    # step 함수, sigmoid 함수를 하나의 그래프에 출력
+    x = np.arange(-10, 10, 0.01)  # [-10, -9.99, ..., 0.98, 0.99]
+    steps = step_function(x)
+    sigmoids = sigmoid(x)
+    plt.plot(x, steps, label='Step function')
+    plt.plot(x, sigmoids, label='Sigmoid function')
+    plt.legend()
+    plt.show()
 
-    for x1 in (0, 1):
-        for x2 in (0, 1):
-            print(f'XOR({x1}, {x2}) -> {xor_gate(x1, x2)}')
+    x = np.arange(-3, 4)
+    print('x =', x)
+    relus = relu(x)
+    print('relu =', relus)
+    plt.plot(x, relus)
+    plt.title('ReLU')
+    plt.show()
+
+
+
 

@@ -1,50 +1,33 @@
+"""
+행렬의 내적(dot product)
+A, B, ...: 2차원 이상의 ndarray
+x, y, ...: 1차원 ndarray
+"""
 import numpy as np
 
+x = np.array([1, 2])
+W = np.array([[3, 4],
+              [5, 6]])
+print(x.dot(W))
+print(W.dot(x))
 
-def and_gate(x):
-    # x는 [0, 0], [0, 1], [1, 0], [1, 1] 중 하나인 numpy.ndarray 타입
-    # w = [w1, w2]인 numpy.ndarray 가중치와 bias b를 찾음.
-    w = np.array([0.5, 0.5])  # weight
-    b = 0  # bias
-    test = x.dot(w) + b  # np.sum(x * w) + b
-    if test > 0.5:
-        return 1
-    else:
-        return 0
+A = np.arange(1, 7).reshape((2, 3))
+print(A)
+B = np.arange(1, 7).reshape((3, 2))
+print(B)
+print(A.dot(B))  # 2x2 행렬
+print(B.dot(A))  # 3x3 행렬
+# 행렬의 내적(dot product)은 교환 법칙(AB = BA)가 성립하지 않는다.
 
+# ndarray.shape -> (x,), (x, y), (x, y, z), ...
+x = np.array([1, 2, 3])
+print(x)
+print(x.shape)  # (3,)
 
-def nand_gate(x):
-    w = np.array([1, 1])
-    b = 1
-    test = x.dot(w) + b
-    if test <= 2:
-        return 1
-    else:
-        return 0
+x = x.reshape((3, 1))
+print(x)
+print(x.shape)
 
-
-def or_gate(x):
-    w = np.array([1, 1])
-    b = 1
-    test = x.dot(w) + b
-    if test >= 2:
-        return 1
-    else:
-        return 0
-
-
-def test_perceptron(perceptron):
-    for x1 in (0, 1):
-        for x2 in (0, 1):
-            x = np.array([x1, x2])
-            result = perceptron(x)
-            print(x, '->', result)
-
-
-if __name__ == '__main__':
-    print('\nAND:')
-    test_perceptron(and_gate)
-    print('\nNAND:')
-    test_perceptron(nand_gate)
-    print('\nOR:')
-    test_perceptron(or_gate)
+x = x.reshape((1, 3))
+print(x)
+print(x.shape)
